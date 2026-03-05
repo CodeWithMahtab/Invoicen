@@ -1,23 +1,16 @@
 "use client";
 import { ThemeToggleButton } from "@/components/theme-toggle-button";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { FC } from "react";
-import { useEffect, useState } from "react";
 import { CurrencyToggleButton } from "../currency-toggle-button";
 
 const Navbar: FC = () => {
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
   const pathname = usePathname();
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <nav
@@ -26,29 +19,23 @@ const Navbar: FC = () => {
     >
       <div className="z-10 flex justify-between items-center border-2 p-2 rounded-xl w-full">
         <div className="flex items-center gap-1 font-bold">
-          {mounted ? (
-            <Link href={"/"}>
-              {theme === "light" ? (
-                <Image
-                  src={"/assets/logos/logo-light.svg"}
-                  height={150}
-                  width={150}
-                  alt="logo"
-                  aria-label="logo"
-                />
-              ) : (
-                <Image
-                  src={"/assets/logos/logo-dark.svg"}
-                  height={150}
-                  width={150}
-                  alt="logo"
-                  aria-label="logo"
-                />
-              )}
-            </Link>
-          ) : (
-            <Skeleton className="w-[120px] h-[60px]" />
-          )}
+          <Link href={"/"}>
+            {/* Uses CSS dark mode class instead of JS — works before hydration */}
+            <Image
+              src={"/assets/logos/logo-light.svg"}
+              height={150}
+              width={150}
+              alt="logo"
+              className="block dark:hidden"
+            />
+            <Image
+              src={"/assets/logos/logo-dark.svg"}
+              height={150}
+              width={150}
+              alt="logo"
+              className="hidden dark:block"
+            />
+          </Link>
         </div>
         <div className="flex items-center">
           <CurrencyToggleButton />
